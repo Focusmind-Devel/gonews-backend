@@ -1,0 +1,280 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static %}
+
+{% block extrastyle %}
+  {{ block.super }}
+  <style>
+    table{
+        width:100% !important
+    }
+
+    tbody{
+        overflow-y: scroll;
+    }
+
+    caption{
+        background:transparent !important;
+        color:#E71D36 !important;
+        font-weight:700 !important;
+    }
+
+    th,td{
+        width:300px;
+        padding:8px;
+    }
+
+    .modal-container{
+        width:800px;
+        height:450px;
+        background: #FFFFFF;
+        box-shadow: 0px 0px 37px rgba(0, 0, 0, 0.37);
+        position:fixed;
+        top:15vh;
+        left: 15vw;
+        display:none;
+        padding:45px 95px 45px 95px;
+    }
+
+    .modal-wrapper table caption{
+        text-align: left;
+        margin-bottom: 20px;
+    }
+
+    .modal-wrapper td{
+        cursor:pointer;
+    }
+
+    .modal-wrapper tr:hover td{
+        color:#E71D36;
+        font-weight:700;
+    }
+
+    .close-icon{
+        position: absolute;
+        right: 20px;
+        top: 20px;
+        cursor:pointer;
+    }
+
+    .item-rm{
+        cursor:pointer
+    }
+
+    .down-link, .up-link{
+        height: 18px;
+        width: 20px;
+        cursor:pointer;
+    }
+
+    tr:first-child .up-link{
+        visibility:hidden;
+    }
+
+    tr:last-child .down-link{
+        visibility:hidden;
+    }
+
+    .down-link{
+        background: url({% static 'admin/img/Arrow1.svg' %}) no-repeat
+    }
+    .up-link{
+        background: url({% static 'admin/img/Arrow2.svg' %}) no-repeat
+    }
+
+    a.show-add{
+        font-family: Muli;
+        font-style: italic;
+        font-weight: normal;
+        font-size: 13px;
+        line-height: 16px;
+        letter-spacing: -0.02em;
+        text-decoration-line: underline;
+        text-transform:lowercase;
+
+        color: #02182B;
+    }
+
+    .show{
+        display:block
+    }
+  </style>
+{% endblock %}
+
+{% block content %}
+{% csrf_token %} 
+<div id="content-main">
+
+{% if categories %}
+    {% for app in categories %}
+        <div class="app-{{ app.slug }} module">
+        <table>
+        <caption>
+            {{ app.name }} <a href="#" class="show-add" id="{{app.slug}}">{{'Agregar Noticia'|lower}}</a>
+        </caption>
+        <thead>
+        <tr>
+        {% for header in headers %}
+        <th scope="col">
+             {{ header|capfirst }}
+        </th>{% endfor %}
+        </tr>
+        </thead>
+        {% for model in app.note_set.all %}
+            <tr class="model-{{ model.object_name|lower }}" data-slug="{{app.slug}}" data-id="{{model.id}}">
+            <td scope="col">{{ model.title }}</td>
+            <td scope="col">{{ model.category.name }}</td>
+            <td scope="col">
+                <div class="up-link"></div>
+                <div class="down-link"></div>
+            </td>
+            <td scope="col">{% if app.slug != 'main' %}<img   data-slug="{{app.slug}}" data-id="{{model.id}}" class="item-rm"  src="/static/admin/img/trash.png">{% else %}&nbsp;{% endif %}</td>
+            </tr>
+        {% endfor %}
+        </table>
+        </div>
+        <div id="modal-{{ app.slug }}" class="modal-container">
+            <img class="close-icon" src="{% static 'admin/images/X.png' %}">
+            <div class="modal-wrapper">
+                <table>
+                    <caption>
+                        Añadir noticias de {{ app.name }}
+                    </caption>
+                    <thead>
+                    <tr>
+                    <th scope="col">
+                
+                        <div class="text"><span>Noticia</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col">
+                
+                        <div class="text"><span>Categoria</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    <th scope="col">
+                
+                        <div class="text"><span>Fecha de creacion</span></div>
+                        <div class="clear"></div>
+                    </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for model in app.candidates %}
+                        <tr class="model-{{ model.object_name|lower }} item-add"  data-slug="{{app.slug}}" data-id="{{model.id}}">
+                        <td scope="col">{{ model.title }}</td>
+                        <td scope="col">{{ model.category.name }}</td>
+                        <td scope="col">{{ model.publish_at }}</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    {% endfor %}
+    
+{% else %}
+    <p>{% trans 'You don’t have permission to view or edit anything.' %}</p>
+{% endif %}
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function(){
+        document.querySelectorAll('.show-add').forEach(item => {
+           item.addEventListener('click',function(e){
+                e.preventDefault();
+                target = e.target.id;
+                el = document.getElementById("modal-"+target);
+                el.classList.add('show')
+            })
+        })
+
+        document.querySelectorAll('.close-icon').forEach(item => {
+           item.addEventListener('click',function(e){
+                e.preventDefault();
+                parent = e.target.parentElement;
+                
+                parent.classList.remove('show')
+            })
+        }) 
+
+        document.querySelectorAll('.up-link,.down-link').forEach(item => {
+           item.addEventListener('click',function(e){
+                e.preventDefault();
+                console.log(e.target.classList)
+                order = (e.target.classList.contains('up-link'))?1:0;
+                element = e.target.parentElement.parentElement;
+                csrf = document.getElementsByName('csrfmiddlewaretoken')[0];
+
+                let data = new FormData();
+                data.append('slug', element.dataset.slug);
+                data.append('id', element.dataset.id);
+                data.append('dir',order);
+                data.append('csrfmiddlewaretoken', csrf.value);
+                fetch("{%url 'home-order'%}",{method:'POST',body:data,credentials: 'same-origin',})
+                .then((response)=>{
+                    if(response.ok){
+                        if(order==1){
+                            prev = element.previousElementSibling
+                            prev.before(element)
+                        }else{
+                            prev = element.nextElementSibling
+                            prev.after(element)
+                        }
+
+                    }
+                })
+                
+                
+                
+            })
+        })   
+
+        document.querySelectorAll('.item-add').forEach(item => {
+           item.addEventListener('click',function(e){
+                e.preventDefault();
+                element = e.target.parentElement;
+                
+                csrf = document.getElementsByName('csrfmiddlewaretoken')[0];
+
+                let data = new FormData();
+                data.append('slug', element.dataset.slug);
+                data.append('id', element.dataset.id);
+                data.append('csrfmiddlewaretoken', csrf.value);
+                fetch("{%url 'home-save'%}",{method:'POST',body:data,credentials: 'same-origin',})
+                .then((response)=>{
+                    if(response.ok){
+                        location.reload()
+
+                    }
+                })
+            })
+        })        
+
+        document.querySelectorAll('.item-rm').forEach(item => {
+           item.addEventListener('click',function(e){
+                e.preventDefault();
+                element = e.target;
+                
+                csrf = document.getElementsByName('csrfmiddlewaretoken')[0];
+
+                let data = new FormData();
+                data.append('slug', element.dataset.slug);
+                data.append('id', element.dataset.id);
+                data.append('csrfmiddlewaretoken', csrf.value);
+                fetch("{%url 'home-del'%}",{method:'POST',body:data,credentials: 'same-origin',})
+                .then((response)=>{
+                    if(response.ok){
+                        location.reload()
+
+                    }
+                })
+            })
+        })        
+    }, false);
+</script>
+      
+{% endblock %}
+
+
+
+

@@ -1,0 +1,170 @@
+@import url("https://use.typekit.net/eya4kqk.css");
+
+body{
+    font-family: "Muli","Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif !important;
+}
+
+input, textarea, select, .form-row p, form .button{
+    font-family: "Muli","Roboto","Lucida Grande","DejaVu Sans","Bitstream Vera Sans",Verdana,Arial,sans-serif !important;
+}
+td, th {
+    vertical-align: middle !important;
+}
+
+h1{
+    font-weight: 700;
+    font-size: 18px;
+    color:#E71D36
+}
+#header{
+    background: #02182B;
+    color: #fff;
+}
+
+#header a:link, #header a:visited{
+    color: #E71D36;
+    text-decoration:none !important;
+    margin-left: 16px;
+}
+
+div.breadcrumbs{
+    background: #BDBDBD;
+    color:#fff;
+    font-size: 18px;
+}
+
+div.breadcrumbs a{
+    color:#333;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+#changelist #toolbar{
+    border-top: none !important;
+    border-bottom: none !important;
+    background: none !important;
+}
+.dashboard #content{
+    width: 400px;
+    margin-right: calc(100vw - 500px);
+}
+
+#content-related{
+    width: calc(100vw - 500px);
+    float: right;
+    margin-right: calc(-100vw + 450px);
+}
+
+.change-form #content-main form{
+    width: 800px !important;
+}
+
+.form-row textarea, .form-row .vTextField, .form-row input:not([type="radio"]):not([type="checkbox"]){
+    width: calc(100% - 200px);
+}
+
+select{
+    min-width: 200px;
+}
+
+/* ESTILOS PARA EL LOGIN */
+body.login{
+    background: #02182B !important;
+}
+
+.login #container{
+    background: transparent !important;
+    border: none !important;
+    margin-top: 40px !important;
+}
+
+.login #content{
+    background: #fff;
+    background: #FFFFFF;
+    padding: 20px !important;
+    box-shadow: 0px 0px 18px rgba(0, 0, 0, 0.25);
+    border-radius: 8px;
+}
+
+.login #header{
+    padding: 15px 16px 120px 16px !important;
+}
+
+.login .submit-row{
+    padding: 1em 0 0 16.7em !important;
+}
+
+
+
+
+
+.module h2, .module caption, .inline-group h2{
+    background: #E0E0E0;
+    font-weight: 700;
+    font-size: 15px;
+    
+}
+
+.module caption{
+    padding: .5em;
+}
+
+a.section:link, a.section:visited{
+    color:#02182B;
+}
+
+a:link, a:visited{
+    color:#02182B;
+    font-weight: 800;
+    text-decoration: none;
+}
+
+
+.addlink, .changelink{
+    color:#4F4F4F !important;
+    font-weight: 700 !important;
+    font-size: 12px;
+}
+
+.button, input[type=submit], input[type=button], .submit-row input, a.button,#changelist #toolbar form input[type="submit"]{
+    
+    width: auto;
+    padding: 10px !important;
+    line-height: 1.3em !important;
+    background: #E71D36 !important;
+    border-radius: 10px !important;
+    color:#fff !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+}
+
+input[type=submit][name=_addanother],input[type=submit][name=_continue]{
+    background: #828282 !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+}
+
+
+#changelist #toolbar form #searchbar{
+    height: 22px !important;
+    vertical-align: middle !important;
+}
+
+.tagsinput .tag{
+    background-color: #E0E0E0 !important;
+    color:#4F4F4F !important;
+    font-size: 12px !important; 
+    font-weight: 700 !important;
+    border-radius: 7px !important;
+}
+
+.tagsinput .tag a{
+    color: #4f4f4f !important;
+    font-weight: 400 !important;
+}
+
+.tagsinput .tag a:after, .tagsinput .tag a:before{
+    background: #4f4f4f !important;
+    height: 1px !important;
+}
+
